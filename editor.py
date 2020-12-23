@@ -60,6 +60,7 @@ def promptEditor():
         elif not os.path.exists(filename):
             print("This file does not exist.")
             continue
+        duration = float(ffmpeg.probe(filename)["format"]["duration"])
         tempCuts = {}
         cutNo = 1
         while True:
@@ -70,7 +71,7 @@ def promptEditor():
                 start = 0.0
                 end = -1.0
             else:
-                end = float(input(f"Cut {cutNo} Ending point (-1.0 to very end): "))
+                end = float(input(f"Cut {cutNo} Ending point (-1.0 to end, max {duration} seconds): "))
             tempCuts[float(start)] = end
             if float(start) == -1.0:
                 break
