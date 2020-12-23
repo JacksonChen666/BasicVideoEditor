@@ -67,6 +67,7 @@ def promptEditor():
             if start == "STOP":
                 break
             elif float(start) == -1.0:
+                start = 0.0
                 end = -1.0
             else:
                 end = float(input(f"Cut {cutNo} Ending point (-1.0 to very end): "))
