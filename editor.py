@@ -37,26 +37,30 @@ def processCuts(cuts: dict):
                         yield video.audio.filter("atrim", start=start, duration=end).filter_('asetpts', 'PTS-STARTPTS')
 
 
-videoCuts = {
-    "video1.ignore.mp4": {
-        "Cuts": {
-            1.0: -1.0
-        }
-    },
-    "video2.ignore.mp4": {
-        "Cuts": {
-            2.0: 2.5
+def cutVideo(cuts: dict):
+    # convert all filenames to ffmpeg-python video and audio that's properly cut
+    videos = processCuts(cuts)
+
+    # https://stackoverflow.com/a/60142346
+    joined = ffmpeg.concat(*videos, v=1, a=1).node
+
+    finalVideo = joined[0]
+    finalAudio = joined[1]
+
+    ffmpeg.output(finalVideo, finalAudio, 'out.ignore.mp4').run()
+
+
+if __name__ == '__main__':
+    videoCuts = {
+        "video1.ignore.mp4": {
+            "Cuts": {
+                1.0: -1.0
+            }
+        },
+        "video2.ignore.mp4": {
+            "Cuts": {
+                2.0: 2.5
+            }
         }
     }
-}
-
-# convert all filenames to ffmpeg-python video and audio that's properly cut
-videos = processCuts(videoCuts)
-
-joined = ffmpeg.concat(*videos, v=1, a=1).node
-
-finalVideo = joined[0]
-finalAudio = joined[1]
-
-# https://stackoverflow.com/a/60142346
-out = ffmpeg.output(finalVideo, finalAudio, 'out.ignore.mp4').run()
+    cutVideo(videoCuts)
